@@ -19,6 +19,3 @@ class LLMClient:
     def generate(self, messages: str):  # return agent structured response
         response = self.provider.chat(messages)
         return response
-
-    def stream(self, messages, on_chunk):
-        self.provider.stream_chat(messages, on_chunk)

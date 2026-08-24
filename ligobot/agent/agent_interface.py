@@ -3,7 +3,7 @@ from agent.llm_client import LLMClient
 
 class Agent:
     """
-    1. Agent
+    Agent
         1. LLM call
         2. Context building
         3. Memory
@@ -21,7 +21,7 @@ class Agent:
         print(chunk, end="", flush=True)
 
     def run(self, user_prompt: str):
-        self.llm_client.generate(user_prompt)  # openai.Stream
+        self.llm_client.generate(user_prompt)
 
     def _loop(self): ...
 
