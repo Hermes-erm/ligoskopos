@@ -1,6 +1,7 @@
 from config import USER_NAME, BOT_NAME
 from agent.agent_interface import Agent
-from agent.llm_client import LLMClient, Gemini, OpenAI
+from agent.llm_client import LLMClient
+from agent.llm_providers import Gemini, OpenRouter
 from prompt_toolkit import prompt
 from prompt_toolkit.formatted_text import HTML
 
@@ -44,6 +45,6 @@ def start(agent: Agent):
 
 if __name__ == "__main__":
     # print("Ligo waking up..")
-    llm_provider = Gemini(model="gemini-3.5-flash-lite")
+    llm_provider = OpenRouter(model="nvidia/nemotron-3.5-lightning:free")
     agent = Agent(LLMClient(llm_provider))  # vary on session (implement it on later)
     start(agent)

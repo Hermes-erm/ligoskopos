@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any
@@ -13,11 +14,11 @@ class ChatRequest:
 class LLMProvider(ABC):
 
     @abstractmethod
-    def chat(self, message: str) -> Any:
+    def chat(self, messages: str) -> Any:
         pass
 
     @abstractmethod
-    def stream_chat(self, message: str) -> Any:
+    def stream_chat(self, message: str, callback: Callable[[Any]]) -> Any:
         pass
 
     @abstractmethod

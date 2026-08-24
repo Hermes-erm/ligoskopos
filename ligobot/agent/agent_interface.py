@@ -17,10 +17,11 @@ class Agent:
     def __init__(self, llm_client: LLMClient):
         self.llm_client = llm_client
 
-    def _process_stream_data(self, message):
-        print(message, end="", flush=True)
+    def _process_stream_data(self, chunk):
+        print(chunk, end="", flush=True)
 
-    def run(self, user_prompt: str): ...
+    def run(self, user_prompt: str):
+        self.llm_client.generate(user_prompt)  # openai.Stream
 
     def _loop(self): ...
 
