@@ -1,7 +1,5 @@
 from config import USER_NAME, BOT_NAME
-from agent.agent_interface import Agent
-from agent.llm_client import LLMClient
-from agent.llm_providers import Gemini, OpenRouter
+from agent import Agent, LLMClient, Gemini, OpenRouter
 from prompt_toolkit import prompt
 from prompt_toolkit.formatted_text import HTML
 
