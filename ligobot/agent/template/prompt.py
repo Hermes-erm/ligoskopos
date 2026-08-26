@@ -11,7 +11,5 @@ WORKSPACE_DIR = Path(__file__).resolve().parent / "workspace"
 
 soul = load_file(WORKSPACE_DIR / "SOUL.md")
 agent = load_file(WORKSPACE_DIR / "AGENTS.md")
-
-print(soul)
-print("*" * 70)
-print(agent)
+user = load_file(WORKSPACE_DIR / "USER.md")
+memory = load_file(WORKSPACE_DIR / "MEMORY.md")

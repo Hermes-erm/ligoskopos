@@ -14,7 +14,16 @@ class Gemini(LLMProvider):
         self.client = genai.Client(api_key=GEMINI_API_KEY)
 
     def chat(self, messages: str):
-        interaction = self.client.interactions.create(model=self.model, input=messages)
+        interaction = self.client.interactions.create(
+            model=self.model,
+            input=messages,
+            response_format={
+                "type": "text",
+                "mime_type": "application/json",
+                "schema": "{}",
+            },
+            tools=[{"type": "google_search"}],
+        )
         return interaction.output_text
 
     def stream_chat(self, messages, callback):
@@ -50,6 +59,7 @@ class OpenRouter(LLMProvider):  # OpenAI SDK under OpenRouter
             instructions="",
             input=messages,
             response_format={},
+            tools=[{"type": "web_search"}],
         )
         print(interaction.output_text)
 
