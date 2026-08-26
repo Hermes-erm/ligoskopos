@@ -1,8 +1,8 @@
-import inspect
 import json
+import inspect
 from typing import Callable, Any, Dict
 
-tools: list[Dict[str, Any]] = []
+tool_defs: list[Dict[str, Any]] = []
 
 
 def register(*args, **kwargs):
@@ -34,7 +34,7 @@ def register(*args, **kwargs):
                 required.append(name)
 
         tool_info["parameters"]["required"] = required
-        tools.append(tool_info)
+        tool_defs.append(tool_info)
 
         def wrapper(*args, **kwargs):
             # Handle function execution

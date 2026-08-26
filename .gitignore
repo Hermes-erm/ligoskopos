@@ -218,5 +218,8 @@ __marimo__/
 .streamlit/secrets.toml
 
 # Agent workspace
-# workspace/**.md
-workspace
+# workspace
+
+# Files Under Agent workspace
+**/workspace/**.md
+**/workspace/**.jsonl

@@ -45,7 +45,12 @@ class OpenRouter(LLMProvider):  # OpenAI SDK under OpenRouter
         )
 
     def chat(self, messages: str):
-        interaction = self.client.responses.create(model=self.model, input=messages)
+        interaction = self.client.responses.create(
+            model=self.model,
+            instructions="",
+            input=messages,
+            response_format={},
+        )
         print(interaction.output_text)
 
     def stream_chat(self, messages, callback):

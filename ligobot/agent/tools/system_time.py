@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from registry import register
+from .registry import register
 
 
 @register(

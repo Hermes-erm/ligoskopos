@@ -17,5 +17,4 @@ class LLMClient:
         self.token_used = None
 
     def generate(self, messages: str):  # return agent structured response
-        response = self.provider.chat(messages)
-        return response
+        return self.provider.chat(messages)
