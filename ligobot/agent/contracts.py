@@ -2,6 +2,8 @@ from collections.abc import Callable
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any
+from .template.prompt import llm_response_schema
+from .tools.registry import tool_defs
 
 
 @dataclass
@@ -12,13 +14,16 @@ class ChatRequest:
 
 
 class LLMProvider(ABC):
+    def __init__(self):
+        self.response_schema = llm_response_schema
+        self.tools = tool_defs
 
     @abstractmethod
-    def chat(self, messages: str) -> Any:
+    def chat(self, messages) -> Any:
         pass
 
     @abstractmethod
-    def stream_chat(self, message: str, callback: Callable[[Any]]) -> Any:
+    def stream_chat(self, message, callback: Callable[[Any]]) -> Any:
         pass
 
     @abstractmethod

@@ -1,18 +1,19 @@
 from config import USER_NAME, BOT_NAME
-from agent import Agent, LLMClient, Gemini, OpenRouter
+from agent import Agent, LLMClient, Gemini, OpenRouter, ContextBuilder
 from prompt_toolkit import prompt
 from prompt_toolkit.formatted_text import HTML
 
 
 def start(agent: Agent):
     """
-    CLI session loop.
+    Run the interactive CLI session.
 
     Flow:
         1. Receive user input
-        2. Assemble context
-        3. Send context to LLM
-        4. Display response
+        2. Build context
+        3. Send context to the LLM
+        4. Display the response
+        5. Repeat until the session ends
     """
 
     print(f"{BOT_NAME}: Hello {USER_NAME}")
@@ -44,5 +45,7 @@ def start(agent: Agent):
 if __name__ == "__main__":
     # print("Ligo waking up..")
     llm_provider = OpenRouter(model="nvidia/nemotron-3.5-lightning:free")
-    agent = Agent(LLMClient(llm_provider))  # vary on session (implement it on later)
+    agent = Agent(
+        llm_client=LLMClient(llm_provider), context_builder=ContextBuilder()
+    )  # vary on session (implement it on later)
     start(agent)

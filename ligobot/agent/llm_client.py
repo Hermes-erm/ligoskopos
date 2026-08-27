@@ -16,5 +16,5 @@ class LLMClient:
         self.token_limit = None
         self.token_used = None
 
-    def generate(self, messages: str):  # return agent structured response
+    def generate(self, messages):
         return self.provider.chat(messages)

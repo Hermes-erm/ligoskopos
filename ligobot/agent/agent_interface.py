@@ -1,6 +1,7 @@
 import json
 from agent.tools.registry import tool_defs
 from agent.llm_client import LLMClient
+from .context_builder import ContextBuilder
 
 
 class Agent:
@@ -17,19 +18,17 @@ class Agent:
         5. Maintain conversation history.
     """
 
-    def __init__(self, llm_client: LLMClient):
+    def __init__(self, llm_client: LLMClient, context_builder: ContextBuilder):
         self.llm_client = llm_client
+        self.context_builder = context_builder
+        self.tools = tool_defs
 
     def _process_stream_data(self, chunk):
         print(chunk, end="", flush=True)
 
     def run(self, user_prompt: str):
-        message = {"tools": tool_defs, "user_prompt": user_prompt}
-        print(json.dumps(message))
-        res = self.llm_client.generate(json.dumps(message))
-        print(res)
-
-    def _build_context(self): ...
+        messages = self.context_builder.build(user_prompt)
+        self.llm_client.generate(messages)
 
     def _loop(self): ...
 

@@ -7,7 +7,7 @@ from .registry import register
     desc="""Returns the system’s current local date and time along with the associated timezone name. The tool uses the system timezone to produce a timezone-aware timestamp, making it suitable for applications that need reliable local time and timezone information.
 """
 )
-def _get_system_time(arg_a, agr_b: list[int] = [1, 2], arg_c: str = "val_2"):
+def _get_system_time():
     # Get local time with system timezone details attached
     aware_local = datetime.now().astimezone()
 

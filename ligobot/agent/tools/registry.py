@@ -3,6 +3,7 @@ import inspect
 from typing import Callable, Any, Dict
 
 tool_defs: list[Dict[str, Any]] = []
+tool_functions: Dict[str, Callable] = {}
 
 
 def register(*args, **kwargs):
@@ -19,7 +20,7 @@ def register(*args, **kwargs):
 
     def extract_func(func: Callable):
         # Handle func metadata extraction
-        tool_info["function"] = func
+        tool_functions[func.__name__] = func
         tool_info["name"] = func.__name__
 
         sig = inspect.signature(func)

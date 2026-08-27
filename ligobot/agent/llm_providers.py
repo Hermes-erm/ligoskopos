@@ -1,4 +1,6 @@
 import httpx
+import json
+from typing import Any
 from google import genai
 from openai import OpenAI as openai
 from config import GEMINI_API_KEY, OPENROUTER_API_KEY
@@ -9,20 +11,17 @@ class Gemini(LLMProvider):
     name = "Gemini"
 
     def __init__(self, model: str):
+        super().__init__()
         self.models = ["gemini-3.5-flash-lite", "gemini-3.7-flash", "gemini-3.5-flash"]
         self.model = model
         self.client = genai.Client(api_key=GEMINI_API_KEY)
 
-    def chat(self, messages: str):
+    def chat(self, messages):
         interaction = self.client.interactions.create(
             model=self.model,
             input=messages,
-            response_format={
-                "type": "text",
-                "mime_type": "application/json",
-                "schema": "{}",
-            },
-            tools=[{"type": "google_search"}],
+            response_format=self.response_schema,
+            tools=self.tools,
         )
         return interaction.output_text
 
@@ -44,6 +43,7 @@ class OpenRouter(LLMProvider):  # OpenAI SDK under OpenRouter
     name = "openrouter"
 
     def __init__(self, model="nvidia/nemotron-3.5-lightning:free"):
+        super().__init__()
         self.models = [
             "nvidia/nemotron-3-super-120b-a12b:free",
             "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
@@ -53,15 +53,15 @@ class OpenRouter(LLMProvider):  # OpenAI SDK under OpenRouter
             base_url="https://openrouter.ai/api/v1", api_key=OPENROUTER_API_KEY
         )
 
-    def chat(self, messages: str):
+    def chat(self, messages):
         interaction = self.client.responses.create(
             model=self.model,
-            instructions="",
-            input=messages,
-            response_format={},
-            tools=[{"type": "web_search"}],
+            input=message,
+            text=self.response_schema,
+            tools=self.tools,
         )
-        print(interaction.output_text)
+        response = json.loads(interaction.output_text)
+        print(response)
 
     def stream_chat(self, messages, callback):
         stream = self.client.responses.create(
