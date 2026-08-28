@@ -27,8 +27,9 @@ class Agent:
         print(chunk, end="", flush=True)
 
     def run(self, user_prompt: str):
-        messages = self.context_builder.build(user_prompt)
-        self.llm_client.generate(messages)
+        # message = self.context_builder.build(user_prompt)
+        instruction = self.context_builder.system_prompt
+        response = self.llm_client.generate(instruction, user_prompt)
 
     def _loop(self): ...
 

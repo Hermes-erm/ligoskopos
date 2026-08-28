@@ -15,11 +15,11 @@ class ChatRequest:
 
 class LLMProvider(ABC):
     def __init__(self):
-        self.response_schema = llm_response_schema
+        # self.response_schema = llm_response_schema
         self.tools = tool_defs
 
     @abstractmethod
-    def chat(self, messages) -> Any:
+    def chat(self, system_prompt, message) -> Any:
         pass
 
     @abstractmethod

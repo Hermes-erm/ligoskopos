@@ -1,3 +1,4 @@
+import json
 from agent.contracts import LLMProvider
 
 
@@ -16,5 +17,8 @@ class LLMClient:
         self.token_limit = None
         self.token_used = None
 
-    def generate(self, messages):
-        return self.provider.chat(messages)
+    def generate(self, system_prompt, message):
+        response = self.provider.chat(system_prompt, message)
+        print(response)
+        print(response.output_text)
+        # return json.loads(response.output_text)

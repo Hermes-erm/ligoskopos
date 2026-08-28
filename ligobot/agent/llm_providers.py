@@ -1,5 +1,4 @@
 import httpx
-import json
 from typing import Any
 from google import genai
 from openai import OpenAI as openai
@@ -16,14 +15,14 @@ class Gemini(LLMProvider):
         self.model = model
         self.client = genai.Client(api_key=GEMINI_API_KEY)
 
-    def chat(self, messages):
+    def chat(self, system_prompt, message):
         interaction = self.client.interactions.create(
             model=self.model,
-            input=messages,
-            response_format=self.response_schema,
+            system_instruction=system_prompt,
+            input=message,
             tools=self.tools,
         )
-        return interaction.output_text
+        return interaction
 
     def stream_chat(self, messages, callback):
         stream = self.client.interactions.create(
@@ -53,15 +52,14 @@ class OpenRouter(LLMProvider):  # OpenAI SDK under OpenRouter
             base_url="https://openrouter.ai/api/v1", api_key=OPENROUTER_API_KEY
         )
 
-    def chat(self, messages):
+    def chat(self, system_prompt, message):
         interaction = self.client.responses.create(
             model=self.model,
+            instructions=system_prompt,
             input=message,
-            text=self.response_schema,
             tools=self.tools,
         )
-        response = json.loads(interaction.output_text)
-        print(response)
+        return interaction
 
     def stream_chat(self, messages, callback):
         stream = self.client.responses.create(
