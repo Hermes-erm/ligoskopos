@@ -19,6 +19,4 @@ class LLMClient:
 
     def generate(self, system_prompt, message):
         response = self.provider.chat(system_prompt, message)
-        print(response)
-        print(response.output_text)
-        # return json.loads(response.output_text)
+        return json.loads(response.output_text)

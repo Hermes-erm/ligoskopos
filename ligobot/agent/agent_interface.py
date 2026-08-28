@@ -30,6 +30,7 @@ class Agent:
         # message = self.context_builder.build(user_prompt)
         instruction = self.context_builder.system_prompt
         response = self.llm_client.generate(instruction, user_prompt)
+        print(response)
 
     def _loop(self): ...
 

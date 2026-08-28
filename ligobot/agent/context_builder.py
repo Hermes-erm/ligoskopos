@@ -18,8 +18,6 @@ class ContextBuilder:
             self.response_schema,
         )
 
-        print(self.system_prompt)
-
     def _generate_system_prompt(self, *args):
         self.system_prompt = "\n".join(args)
         self.system_prompt += f"\n{llm_response_schema}"
