@@ -1,7 +1,8 @@
 from collections.abc import Callable
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any
+from pydantic import BaseModel
+from typing import Any, Literal
 from .template.prompt import llm_response_schema
 from .tools.registry import tool_defs
 
@@ -29,3 +30,9 @@ class LLMProvider(ABC):
     @abstractmethod
     def end_chat(self):
         pass
+
+
+class ChatResponse(BaseModel):
+    response_type: Literal["text", "tool_call"]
+    text_output: str
+    tool_call: Any

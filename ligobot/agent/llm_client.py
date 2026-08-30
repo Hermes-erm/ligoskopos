@@ -1,4 +1,5 @@
-import json
+import json_repair
+from .contracts import ChatResponse
 from agent.contracts import LLMProvider
 
 
@@ -19,4 +20,5 @@ class LLMClient:
 
     def generate(self, system_prompt, message):
         response = self.provider.chat(system_prompt, message)
-        return json.loads(response.output_text)
+        data = json_repair.loads(response.output_text)
+        return ChatResponse.model_validate(data)

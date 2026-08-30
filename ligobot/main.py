@@ -44,7 +44,7 @@ def start(agent: Agent):
 
 if __name__ == "__main__":
     # print("Ligo waking up..")
-    # llm_provider = OpenRouter(model="nvidia/nemotron-3.5-lightning:free")
+    # llm_provider = OpenRouter(model="nvidia/nemotron-3-super-120b-a12b:free")
     llm_provider = Gemini(model="gemini-3.5-flash-lite")
     agent = Agent(
         llm_client=LLMClient(llm_provider), context_builder=ContextBuilder()

@@ -9,4 +9,4 @@ env_vars = dotenv_values(BASE_DIR / ".env")
 GEMINI_API_KEY = env_vars.get("GEMINI_API_KEY")
 OPENROUTER_API_KEY = env_vars.get("OPENROUTER_API_KEY")
 
-# providers = ["gemini", "openrouter"]
+LOOP_DEPTH = 5

@@ -41,9 +41,10 @@ class Gemini(LLMProvider):
 class OpenRouter(LLMProvider):  # OpenAI SDK under OpenRouter
     name = "openrouter"
 
-    def __init__(self, model="nvidia/nemotron-3.5-lightning:free"):
+    def __init__(self, model: str):
         super().__init__()
         self.models = [
+            "nvidia/nemotron-3.5-lightning:free",
             "nvidia/nemotron-3-super-120b-a12b:free",
             "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
         ]

@@ -1,7 +1,8 @@
 import json
-from agent.tools.registry import tool_defs
+from agent.tools.registry import tool_defs, tool_functions
 from agent.llm_client import LLMClient
 from .context_builder import ContextBuilder
+from .contracts import ChatResponse
 
 
 class Agent:
@@ -26,13 +27,31 @@ class Agent:
     def _process_stream_data(self, chunk):
         print(chunk, end="", flush=True)
 
+    def _process_bot_cli_output(sefl, message): ...
+
     def run(self, user_prompt: str):
         # message = self.context_builder.build(user_prompt)
-        instruction = self.context_builder.system_prompt
-        response = self.llm_client.generate(instruction, user_prompt)
-        print(response)
+        response = self.llm_client.generate(
+            self.context_builder.system_prompt, user_prompt
+        )
+        result = self._loop(response, user_prompt)
 
-    def _loop(self): ...
+    def _loop(self, response: ChatResponse, user_req):
+        while True:
+            print(response)
+            if response.response_type == "tool_call":
+                fn_name = response.tool_call["function_name"]
+                fn_args = response.tool_call["function_arguments"]
+
+                fn_result = tool_functions[fn_name]()
+
+                response = self.llm_client.generate(
+                    self.context_builder.system_prompt
+                    + f"Last function call result: {fn_result}",
+                    user_req,
+                )
+            else:
+                return response.text_output
 
 
 # run(): self.llm_client.provider.stream_chat(user_prompt, self._process_stream_data)
