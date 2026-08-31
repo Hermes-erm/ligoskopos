@@ -28,9 +28,14 @@ def _get_system_time():
     desc="""Execute a shell command and return its standard output, error output, exit code, and the arguments passed to the process.
 Use this tool when you need to execute a command on the local system. Do not use it for prohibited commands such as `rm`, `shutdown`, `sudo`, or `reboot`.
 The command must be provided as separate arguments rather than as a single command string.
-"""
+""",
+    properties={
+        "cmd": {"type": "array", "items": {"type": "string"}},
+        "is_shell": {"type": "boolean", "default": False},
+    },
+    required=["cmd"],
 )
-def _run_cmd(*cmd: list[str], is_shell: bool = False):
+def _run_cmd(cmd: list[str], is_shell: bool = False):
     prohibited_cmds = ["rm", "shutdown", "sudo", "reboot", "rmdir"]
     is_cmd_prohibited = any(arg in prohibited_cmds for arg in cmd)
 
@@ -38,14 +43,14 @@ def _run_cmd(*cmd: list[str], is_shell: bool = False):
         return f"Prohibited command found in command execution: {cmd}"
 
     shell_response: CompletedProcess = subprocess.run(
-        *cmd, cwd=cwd, capture_output=True, text=True, timeout=10
+        cmd, cwd=cwd, capture_output=True, text=True, timeout=10
     )
 
     output = {
         "cmd_output": shell_response.stdout,
         "diagnostics": shell_response.stderr,
         "error_code": shell_response.returncode,
-        "args_passed": list(cmd),
+        "args_passed": cmd,
     }
 
     return json.dumps(output)

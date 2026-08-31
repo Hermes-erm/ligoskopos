@@ -24,15 +24,20 @@ def register(*args, **kwargs):
         tool_info["name"] = func.__name__
 
         sig = inspect.signature(func)
-        required = []
 
-        for name, param in sig.parameters.items():
-            tool_info["parameters"]["properties"][name] = {
-                "type": param.annotation,
-                "default_value": param.default,
-            }
-            if param.annotation is inspect.Parameter.empty:
-                required.append(name)
+        required = kwargs.get("required", [])
+        tool_info["parameters"]["properties"] = kwargs.get("properties", {})
+
+        # TODO: Re-enable automatic parameter schema generation later
+        # for name, param in sig.parameters.items():
+        #     property_schema = {"type": _json_type(param.annotation)}
+
+        #     if param.default is inspect.Parameter.empty:
+        #         required.append(name)
+        #     else:
+        #         property_schema["default"] = param.default
+
+        #     tool_info["parameters"]["properties"][name] = property_schema
 
         tool_info["parameters"]["required"] = required
         tool_defs.append(tool_info)
@@ -44,3 +49,17 @@ def register(*args, **kwargs):
         return wrapper
 
     return extract_func
+
+
+def _json_type(annotation):
+    if annotation == str:
+        return "string"
+    if annotation == int:
+        return "integer"
+    if annotation == float:
+        return "number"
+    if annotation == bool:
+        return "boolean"
+    if annotation == list[str]:
+        return "array[string]"
+    return "string"
