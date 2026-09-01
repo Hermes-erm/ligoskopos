@@ -15,12 +15,12 @@ class ContextBuilder:
             self.agent_profile,
             self.user_context,
             self.memory_context,
-            self.response_schema,
+            # self.response_schema,
         )
 
     def _generate_system_prompt(self, *args):
         self.system_prompt = "\n".join(args)
-        self.system_prompt += f"\n{llm_response_schema}"
+        # self.system_prompt += f"\n{llm_response_schema}"
         return self.system_prompt
 
     def build(self, message: str): ...

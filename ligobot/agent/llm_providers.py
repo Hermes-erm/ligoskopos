@@ -3,7 +3,7 @@ from typing import Any
 from google import genai
 from openai import OpenAI as openai
 from config import GEMINI_API_KEY, OPENROUTER_API_KEY
-from agent.contracts import LLMProvider
+from agent.contracts import LLMProvider, ChatResponse
 
 
 class Gemini(LLMProvider):
@@ -21,6 +21,11 @@ class Gemini(LLMProvider):
             system_instruction=system_prompt,
             input=message,
             tools=self.tools,
+            response_format={
+                "type": "text",
+                "mime_type": "application/json",
+                "schema": ChatResponse.model_json_schema(),
+            },
         )
         return interaction
 
@@ -54,11 +59,12 @@ class OpenRouter(LLMProvider):  # OpenAI SDK under OpenRouter
         )
 
     def chat(self, system_prompt, message):
-        interaction = self.client.responses.create(
+        interaction = self.client.responses.parse(
             model=self.model,
             instructions=system_prompt,
             input=message,
             tools=self.tools,
+            text_format=ChatResponse,
         )
         return interaction
 

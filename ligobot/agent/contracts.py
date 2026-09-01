@@ -32,7 +32,12 @@ class LLMProvider(ABC):
         pass
 
 
+class ToolCall(BaseModel):
+    function_name: str
+    function_arguments: dict[str, Any]
+
+
 class ChatResponse(BaseModel):
     response_type: Literal["text", "tool_call"]
     text_output: str
-    tool_call: Any
+    tool_call: ToolCall | None = None
