@@ -8,5 +8,6 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 env_vars = dotenv_values(BASE_DIR / ".env")
 GEMINI_API_KEY = env_vars.get("GEMINI_API_KEY")
 OPENROUTER_API_KEY = env_vars.get("OPENROUTER_API_KEY")
+GROQ_API_KEY = env_vars.get("GROQ_API_KEY")
 
 LOOP_DEPTH = 5

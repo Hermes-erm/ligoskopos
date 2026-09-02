@@ -1,8 +1,8 @@
 import httpx
 from typing import Any
 from google import genai
-from openai import OpenAI as openai
-from config import GEMINI_API_KEY, OPENROUTER_API_KEY
+from openai import OpenAI
+from config import GEMINI_API_KEY, OPENROUTER_API_KEY, GROQ_API_KEY
 from agent.contracts import LLMProvider, ChatResponse
 
 
@@ -21,11 +21,6 @@ class Gemini(LLMProvider):
             system_instruction=system_prompt,
             input=message,
             tools=self.tools,
-            response_format={
-                "type": "text",
-                "mime_type": "application/json",
-                "schema": ChatResponse.model_json_schema(),
-            },
         )
         return interaction
 
@@ -43,28 +38,23 @@ class Gemini(LLMProvider):
         return super().end_chat()
 
 
-class OpenRouter(LLMProvider):  # OpenAI SDK under OpenRouter
+class OpenAICompatible(LLMProvider):
     name = "openrouter"
 
-    def __init__(self, model: str):
+    def __init__(self, name, active_model, models, base_url, api_key):
         super().__init__()
-        self.models = [
-            "nvidia/nemotron-3.5-lightning:free",
-            "nvidia/nemotron-3-super-120b-a12b:free",
-            "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
-        ]
-        self.model = model
-        self.client = openai(
-            base_url="https://openrouter.ai/api/v1", api_key=OPENROUTER_API_KEY
-        )
+
+        self.name = name
+        self.model = active_model
+        self.models = models
+        self.client = OpenAI(base_url=base_url, api_key=api_key)
 
     def chat(self, system_prompt, message):
-        interaction = self.client.responses.parse(
+        interaction = self.client.responses.create(
             model=self.model,
             instructions=system_prompt,
             input=message,
             tools=self.tools,
-            text_format=ChatResponse,
         )
         return interaction
 
@@ -82,3 +72,41 @@ class OpenRouter(LLMProvider):  # OpenAI SDK under OpenRouter
 
     def end_chat(self):
         return super().end_chat()
+
+
+class OpenRouter(OpenAICompatible):
+    name = "openrouter"
+
+    def __init__(self, model: str):
+        self.models = [
+            "nvidia/nemotron-3.5-lightning:free",
+            "nvidia/nemotron-3-super-120b-a12b:free",
+            "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+        ]
+
+        super().__init__(
+            name=self.name,
+            active_model=model,
+            models=self.models,
+            base_url="https://openrouter.ai/api/v1",
+            api_key=OPENROUTER_API_KEY,
+        )
+
+
+class Groq(OpenAICompatible):
+    name = "groq"
+
+    def __init__(self, model: str):
+        self.models = [
+            "openai/gpt-oss-120b",
+            "llama-3.3-70b-versatile",
+            "meta-llama/llama-4-scout-17b-16e-instruct",
+        ]
+
+        super().__init__(
+            name=self.name,
+            active_model=model,
+            models=self.models,
+            base_url="https://api.groq.com/openai/v1",
+            api_key=GROQ_API_KEY,
+        )

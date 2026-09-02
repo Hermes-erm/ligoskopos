@@ -43,8 +43,6 @@ class Agent:
                 fn_name = response.tool_call["function_name"]
                 fn_args = response.tool_call["function_arguments"]
 
-                print(type(fn_args), fn_args, *fn_args)
-
                 fn_result = tool_functions[fn_name](**fn_args)
 
                 response = self.llm_client.generate(

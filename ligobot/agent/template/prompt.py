@@ -18,40 +18,33 @@ response = load_file(WORKSPACE_DIR / "RESPONSE.md")
 llm_response_schema = {
     "type": "json_schema",
     "name": "llm_response",
-    "strict": False,
+    "strict": True,
     "schema": {
         "type": "object",
         "properties": {
             "response_type": {
                 "type": "string",
                 "enum": ["text", "tool_call"],
-                "description": ("The type of response produced by the LLM."),
             },
             "text_output": {
                 "type": "string",
-                "description": (
-                    "The textual response. Use an empty string when "
-                    "response_type is 'tool_call'."
-                ),
             },
             "tool_call": {
-                "type": "object",
-                "description": (
-                    "The tool call to execute when response_type is 'tool_call'."
-                ),
-                "properties": {
-                    "function_name": {
-                        "type": "string",
+                "anyOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "function_name": {"type": "string"},
+                            "function_arguments": {"type": "object"},
+                        },
+                        "required": [
+                            "function_name",
+                            "function_arguments",
+                        ],
+                        "additionalProperties": False,
                     },
-                    "function_arguments": {
-                        "type": "string",
-                    },
-                },
-                "required": [
-                    "function_name",
-                    "function_arguments",
+                    {"type": "null"},
                 ],
-                "additionalProperties": False,
             },
         },
         "required": [

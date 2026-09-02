@@ -1,5 +1,5 @@
 from config import USER_NAME, BOT_NAME
-from agent import Agent, LLMClient, Gemini, OpenRouter, ContextBuilder
+from agent import Agent, LLMClient, Gemini, OpenRouter, Groq, ContextBuilder
 from prompt_toolkit import prompt
 from prompt_toolkit.formatted_text import HTML
 
@@ -42,11 +42,15 @@ def start(agent: Agent):
         print(f"\n{BOT_NAME}: Exiting...")
 
 
+# print("Ligo waking up..")
 if __name__ == "__main__":
-    # print("Ligo waking up..")
+
     # llm_provider = OpenRouter(model="nvidia/nemotron-3.5-lightning:free")
-    llm_provider = Gemini(model="gemini-3.5-flash-lite")
+    # llm_provider = Gemini(model="gemini-3.5-flash-lite")
+    llm_provider = Groq(model="openai/gpt-oss-120b")
+
     agent = Agent(
         llm_client=LLMClient(llm_provider), context_builder=ContextBuilder()
     )  # vary on session (implement it on later)
+
     start(agent)
