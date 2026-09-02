@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     # llm_provider = OpenRouter(model="nvidia/nemotron-3.5-lightning:free")
     # llm_provider = Gemini(model="gemini-3.5-flash-lite")
-    llm_provider = Groq(model="openai/gpt-oss-120b")
+    llm_provider = Groq(model="qwen/qwen3.6-27b")
 
     agent = Agent(
         llm_client=LLMClient(llm_provider), context_builder=ContextBuilder()

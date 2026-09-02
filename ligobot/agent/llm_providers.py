@@ -1,4 +1,3 @@
-import httpx
 from typing import Any
 from google import genai
 from openai import OpenAI
@@ -98,9 +97,9 @@ class Groq(OpenAICompatible):
 
     def __init__(self, model: str):
         self.models = [
+            "qwen/qwen3.6-27b",
+            "openai/gpt-oss-20b",
             "openai/gpt-oss-120b",
-            "llama-3.3-70b-versatile",
-            "meta-llama/llama-4-scout-17b-16e-instruct",
         ]
 
         super().__init__(
