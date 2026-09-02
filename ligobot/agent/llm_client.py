@@ -20,8 +20,5 @@ class LLMClient:
 
     def generate(self, system_prompt, message):
         response = self.provider.chat(system_prompt, message)
-        print(response)
-        print("*" * 100)
-        print(response.output_text)
         data = json_repair.loads(response.output_text)
         return ChatResponse.model_validate(data)  # Python dict/instance -> Schema

@@ -35,19 +35,20 @@ class Agent:
             self.context_builder.system_prompt, user_prompt
         )
         result = self._loop(response, user_prompt)
+        print(result)
 
     def _loop(self, response: ChatResponse, user_req):
         while True:
-            print(response)
+            # print(response)
             if response.response_type == "tool_call":
-                fn_name = response.tool_call["function_name"]
-                fn_args = response.tool_call["function_arguments"]
+                fn_name = response.tool_call.function_name
+                fn_args = response.tool_call.function_arguments
 
                 fn_result = tool_functions[fn_name](**fn_args)
 
                 response = self.llm_client.generate(
                     self.context_builder.system_prompt
-                    + f"Last function call result: {fn_result}",
+                    + f"\nLast function call result: {fn_result}",
                     user_req,
                 )
             else:

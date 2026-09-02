@@ -26,3 +26,8 @@ build-backend = "uv_build"
 
 [tool.uv]
 package = false
+
+[dependency-groups]
+dev = [
+    "watchfiles>=1.2.0",
+]

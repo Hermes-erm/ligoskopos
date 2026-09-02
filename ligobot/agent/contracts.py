@@ -40,4 +40,4 @@ class ToolCall(BaseModel):
 class ChatResponse(BaseModel):
     response_type: Literal["text", "tool_call"]
     text_output: str
-    tool_call: ToolCall | None = None
+    tool_call: ToolCall | dict = {}
