@@ -1,0 +1,25 @@
+[project]
+name = "ligoskopos"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Hermes-erm", email = "None@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "google-genai>=2.21.0",
+    "httpx>=0.28.1",
+    "openai>=3.7.0",
+    "pydantic>=2.13.5",
+]
+
+[project.scripts]
+ligoskopos = "ligoskopos:main"
+
+[build-system]
+requires = ["uv_build>=0.12.9,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+package = false
