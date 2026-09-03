@@ -19,7 +19,7 @@ class Gemini(LLMProvider):
             model=self.model,
             system_instruction=system_prompt,
             input=message,
-            tools=self.tools,
+            # tools=self.tools,
         )
         return interaction
 
@@ -53,7 +53,7 @@ class OpenAICompatible(LLMProvider):
             model=self.model,
             instructions=system_prompt,
             input=message,
-            tools=self.tools,
+            # tools=self.tools,
         )
         return interaction
 

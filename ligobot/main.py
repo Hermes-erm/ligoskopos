@@ -30,7 +30,7 @@ def start(agent: Agent):
             if not user_prompt:
                 continue
 
-            if user_prompt.lower() in ["quit", "bye", "exit"]:
+            if user_prompt.lower() in ["quit", "bye", "exit", "clear"]:
                 print(f"{BOT_NAME}: Catch you later! 👋 Bye")
                 break
 

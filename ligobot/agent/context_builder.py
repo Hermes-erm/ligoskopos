@@ -1,5 +1,7 @@
 from typing import Any
+import json
 from .template.prompt import soul, agent, user, memory, response, llm_response_schema
+from .tools.registry import tool_defs
 
 
 class ContextBuilder:
@@ -20,7 +22,14 @@ class ContextBuilder:
 
     def _generate_system_prompt(self, *args):
         self.system_prompt = "\n".join(args)
-        self.system_prompt += f"\n{llm_response_schema}"
+        self.system_prompt += f"\n{json.dumps(llm_response_schema)}"
+        self.system_prompt += (
+            "\n\n## Available Tools\n"
+            "Use the following tools when necessary. "
+            "Select a tool by its exact `name` and provide only the arguments defined in its `parameters`.\n\n"
+            f"{json.dumps(tool_defs)}"
+        )
+
         return self.system_prompt
 
     def build(self, message: str): ...
