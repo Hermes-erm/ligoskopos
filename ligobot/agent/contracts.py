@@ -15,6 +15,8 @@ class ChatRequest:
 
 
 class LLMProvider(ABC):
+    name = ""
+
     def __init__(self):
         # self.response_schema = llm_response_schema
         self.tools = tool_defs

@@ -7,10 +7,10 @@ from agent.contracts import LLMProvider, ChatResponse
 
 class Gemini(LLMProvider):
     name = "Gemini"
+    models = ["gemini-3.5-flash-lite", "gemini-3.7-flash", "gemini-3.5-flash"]
 
-    def __init__(self, model: str):
+    def __init__(self, model: str = models[0]):
         super().__init__()
-        self.models = ["gemini-3.5-flash-lite", "gemini-3.7-flash", "gemini-3.5-flash"]
         self.model = model
         self.client = genai.Client(api_key=GEMINI_API_KEY)
 
@@ -75,13 +75,13 @@ class OpenAICompatible(LLMProvider):
 
 class OpenRouter(OpenAICompatible):
     name = "openrouter"
+    models = [
+        "nvidia/nemotron-3.5-lightning:free",
+        "nvidia/nemotron-3-super-120b-a12b:free",
+        "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+    ]
 
-    def __init__(self, model: str):
-        self.models = [
-            "nvidia/nemotron-3.5-lightning:free",
-            "nvidia/nemotron-3-super-120b-a12b:free",
-            "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
-        ]
+    def __init__(self, model: str = models[0]):
 
         super().__init__(
             name=self.name,
@@ -94,14 +94,14 @@ class OpenRouter(OpenAICompatible):
 
 class Groq(OpenAICompatible):
     name = "groq"
+    models = [
+        "qwen/qwen3.6-27b",
+        "qwen/qwen3.8-27b",
+        "openai/gpt-oss-20b",
+        "openai/gpt-oss-120b",
+    ]
 
-    def __init__(self, model: str):
-        self.models = [
-            "qwen/qwen3.6-27b",
-            "qwen/qwen3.8-27b",
-            "openai/gpt-oss-20b",
-            "openai/gpt-oss-120b",
-        ]
+    def __init__(self, model: str = models[0]):
 
         super().__init__(
             name=self.name,
