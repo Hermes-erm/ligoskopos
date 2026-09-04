@@ -33,19 +33,22 @@ class LLMClient:
         },
     ]
 
-    def __init__(self):
+    def __init__(self, provider: LLMProvider | None):
 
-        options = [
-            (ind, self.providers[ind]["desc"]) for ind in range(len(self.providers))
-        ]
-        provider_ind = choice(
-            message="Choose the provider:", options=options, default=options[0]
-        )
-        selected_provider = self.providers[provider_ind]
+        if provider:
+            self.provider = provider
+        else:
+            options = [
+                (ind, self.providers[ind]["desc"]) for ind in range(len(self.providers))
+            ]
+            provider_ind = choice(
+                message="Choose the provider:", options=options, default=options[0]
+            )
+            selected_provider = self.providers[provider_ind]
 
-        self.provider = selected_provider["provider"](
-            selected_provider["default_model"]
-        )
+            self.provider = selected_provider["provider"](
+                selected_provider["default_model"]
+            )
 
         self.token_limit = None
         self.token_used = None

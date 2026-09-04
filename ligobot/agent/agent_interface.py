@@ -3,6 +3,8 @@ from agent.tools.registry import tool_defs, tool_functions
 from agent.llm_client import LLMClient
 from .context_builder import ContextBuilder
 from .contracts import ChatResponse
+from config import console
+from rich.panel import Panel
 
 
 class Agent:
@@ -53,6 +55,16 @@ class Agent:
                 )
             else:
                 return response.text_output
+
+    def _log_response(self, response):
+        console.print(
+            Panel(
+                response,
+                title="[bold cyan]Ligo[/bold cyan]",
+                border_style="cyan",
+                padding=(0, 1),
+            )
+        )
 
 
 # run(): self.llm_client.provider.stream_chat(user_prompt, self._process_stream_data)

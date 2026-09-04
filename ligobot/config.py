@@ -1,5 +1,8 @@
 from dotenv import dotenv_values
 from pathlib import Path
+from rich.console import Console
+
+console = Console()
 
 USER_NAME = "Panda"
 BOT_NAME = "Ligo"
