@@ -33,7 +33,7 @@ class LLMClient:
         },
     ]
 
-    def __init__(self, provider: LLMProvider | None):
+    def __init__(self, provider: LLMProvider | None = None):
 
         if provider:
             self.provider = provider

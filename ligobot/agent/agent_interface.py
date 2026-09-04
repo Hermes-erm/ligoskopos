@@ -37,7 +37,7 @@ class Agent:
             self.context_builder.system_prompt, user_prompt
         )
         result = self._loop(response, user_prompt)
-        print(result)
+        self._log_response(result)
 
     def _loop(self, response: ChatResponse, user_req):
         while True:
