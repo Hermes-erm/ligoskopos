@@ -26,8 +26,12 @@ def start(agent: Agent):
     try:
         while True:
             user_prompt = prompt(
-                HTML(f"<ansigreen><b>{USER_NAME}</b></ansigreen> <ansidarkcyan>›</ansidarkcyan> "),
-                placeholder=HTML('<style color="#666666"><i>What’s on your mind?</i></style>'),
+                HTML(
+                    f"<ansigreen><b>{USER_NAME}</b></ansigreen> <ansidarkcyan>›</ansidarkcyan> "
+                ),
+                placeholder=HTML(
+                    '<style color="#666666"><i>What’s on your mind?</i></style>'
+                ),
             )
             user_prompt = user_prompt.strip()
 

@@ -19,7 +19,7 @@ class LLMClient:
         {
             "provider": Groq,
             "desc": "Groq (default)",
-            "default_model": "qwen/qwen3.6-27b",
+            "default_model": "openai/gpt-oss-20b",
         },
         {
             "provider": Gemini,
@@ -57,4 +57,8 @@ class LLMClient:
         response = self.provider.chat(system_prompt, message)
         # print(response)
         data = json_repair.loads(response)
+        if not isinstance(data, dict):  # Handle on err log
+            raise ValueError(
+                f"Model did not return valid JSON. Raw output: {response!r}"
+            )
         return ChatResponse.model_validate(data)  # Python dict/instance -> Schema

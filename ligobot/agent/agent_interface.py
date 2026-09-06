@@ -40,23 +40,26 @@ class Agent:
         self.status.start()
 
         result = self._loop(user_prompt)
-        self._log_response(result)
+
+        if result is not None:
+            self._log_response(result)
 
         self.status.stop()
 
     def _loop(self, user_req):
-        loop_cnt = 0
+        loop_cnt = 1
+
+        response = self.llm_client.generate(
+            self.context_builder.system_prompt, user_req
+        )
 
         while True:
 
-            if loop_cnt > LOOP_DEPTH:
+            if loop_cnt >= LOOP_DEPTH:
                 self._log_error("Maximum loop depth exceeded")
-                break
+                return None
 
             self._status_update(f"{BOT_NAME} thinking..")
-            response = self.llm_client.generate(
-                self.context_builder.system_prompt, user_req
-            )
 
             # print(response)
 
@@ -73,11 +76,13 @@ class Agent:
                     + f"\nLast function call result: {fn_result}",
                     user_req,
                 )
-            elif response.error:
+            elif response.response_type == "error":
                 self._log_error(response.error.message)
                 break
             else:
                 return response.text_output
+
+            loop_cnt += 1
 
     def _log_response(self, response):
         console.print(
@@ -111,7 +116,7 @@ class Agent:
 
     def _log_error(self, err_msg):
         console.print(
-            f"[bold red]ERROR:[/] {err_msg}\n" "Try again with another provider.",
+            f"[bold red]\nERROR:[/] {err_msg}, Try again",
             style="yellow",
         )
 

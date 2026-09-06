@@ -28,11 +28,15 @@ class Gemini(LLMProvider):
         except genAPIErr as err:
             return ChatResponse(
                 response_type="error",
-                error=ResponseError(message=err.message, code=err.code, body=err.status),
+                error=ResponseError(
+                    message=err.message, code=err.code, body=err.status
+                ),
             ).model_dump_json()
 
     def stream_chat(self, messages, callback):
-        stream = self.client.interactions.create(model=self.model, input=messages, stream=True)
+        stream = self.client.interactions.create(
+            model=self.model, input=messages, stream=True
+        )
 
         for event in stream:
             if event.event_type == "step.delta":
@@ -67,7 +71,9 @@ class OpenAICompatible(LLMProvider):
         except APIError as err:
             return ChatResponse(
                 response_type="error",
-                error=ResponseError(message=err.body["message"], code=err.code, body=err.body),
+                error=ResponseError(
+                    message=err.body["message"], code=err.code, body=err.body
+                ),
             ).model_dump_json()
 
     def stream_chat(self, messages, callback):
@@ -109,9 +115,9 @@ class Groq(OpenAICompatible):
     name = "groq"
     models = [
         "qwen/qwen3.6-27b",
-        "qwen/qwen3.8-27b",
         "openai/gpt-oss-20b",
         "openai/gpt-oss-120b",
+        "minimaxai/minimax-m2.7",
     ]
 
     def __init__(self, model: str = models[0]):
