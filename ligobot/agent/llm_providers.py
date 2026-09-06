@@ -1,8 +1,10 @@
+import json
 from typing import Any
 from google import genai
-from openai import OpenAI
+from google.genai.errors import APIError as genAPIErr
+from openai import OpenAI, APIError
 from config import GEMINI_API_KEY, OPENROUTER_API_KEY, GROQ_API_KEY
-from agent.contracts import LLMProvider, ChatResponse
+from agent.contracts import LLMProvider, ChatResponse, ResponseError
 
 
 class Gemini(LLMProvider):
@@ -15,18 +17,22 @@ class Gemini(LLMProvider):
         self.client = genai.Client(api_key=GEMINI_API_KEY)
 
     def chat(self, system_prompt, message):
-        interaction = self.client.interactions.create(
-            model=self.model,
-            system_instruction=system_prompt,
-            input=message,
-            # tools=self.tools,
-        )
-        return interaction
+        try:
+            interaction = self.client.interactions.create(
+                model=self.model,
+                system_instruction=system_prompt,
+                input=message,
+                # tools=self.tools,
+            )
+            return interaction.output_text
+        except genAPIErr as err:
+            return ChatResponse(
+                response_type="error",
+                error=ResponseError(message=err.message, code=err.code, body=err.status),
+            ).model_dump_json()
 
     def stream_chat(self, messages, callback):
-        stream = self.client.interactions.create(
-            model=self.model, input=messages, stream=True
-        )
+        stream = self.client.interactions.create(model=self.model, input=messages, stream=True)
 
         for event in stream:
             if event.event_type == "step.delta":
@@ -49,13 +55,20 @@ class OpenAICompatible(LLMProvider):
         self.client = OpenAI(base_url=base_url, api_key=api_key)
 
     def chat(self, system_prompt, message):
-        interaction = self.client.responses.create(
-            model=self.model,
-            instructions=system_prompt,
-            input=message,
-            # tools=self.tools,
-        )
-        return interaction
+        try:
+            interaction = self.client.responses.create(
+                model=self.model,
+                instructions=system_prompt,
+                input=message,
+                # tools=self.tools,
+            )
+            return interaction.output_text
+
+        except APIError as err:
+            return ChatResponse(
+                response_type="error",
+                error=ResponseError(message=err.body["message"], code=err.code, body=err.body),
+            ).model_dump_json()
 
     def stream_chat(self, messages, callback):
         stream = self.client.responses.create(

@@ -1,9 +1,10 @@
 import json
+from typing import Literal
 from agent.tools.registry import tool_defs, tool_functions
 from agent.llm_client import LLMClient
 from .context_builder import ContextBuilder
 from .contracts import ChatResponse
-from config import console
+from config import BOT_NAME, LOOP_DEPTH, console
 from rich.panel import Panel
 
 
@@ -21,6 +22,8 @@ class Agent:
         5. Maintain conversation history.
     """
 
+    status = console.status("Agent executing")
+
     def __init__(self, llm_client: LLMClient, context_builder: ContextBuilder):
         self.llm_client = llm_client
         self.context_builder = context_builder
@@ -33,18 +36,35 @@ class Agent:
 
     def run(self, user_prompt: str):
         # message = self.context_builder.build(user_prompt)
-        response = self.llm_client.generate(
-            self.context_builder.system_prompt, user_prompt
-        )
-        result = self._loop(response, user_prompt)
+
+        self.status.start()
+
+        result = self._loop(user_prompt)
         self._log_response(result)
 
-    def _loop(self, response: ChatResponse, user_req):
+        self.status.stop()
+
+    def _loop(self, user_req):
+        loop_cnt = 0
+
         while True:
+
+            if loop_cnt > LOOP_DEPTH:
+                self._log_error("Maximum loop depth exceeded")
+                break
+
+            self._status_update(f"{BOT_NAME} thinking..")
+            response = self.llm_client.generate(
+                self.context_builder.system_prompt, user_req
+            )
+
             # print(response)
+
             if response.response_type == "tool_call":
                 fn_name = response.tool_call.function_name
                 fn_args = response.tool_call.function_arguments
+
+                self._status_update(f"Executing tool '{fn_name}()'", "tool")
 
                 fn_result = tool_functions[fn_name](**fn_args)
 
@@ -53,6 +73,9 @@ class Agent:
                     + f"\nLast function call result: {fn_result}",
                     user_req,
                 )
+            elif response.error:
+                self._log_error(response.error.message)
+                break
             else:
                 return response.text_output
 
@@ -64,6 +87,32 @@ class Agent:
                 border_style="cyan",
                 padding=(0, 1),
             )
+        )
+
+    def _status_update(
+        self,
+        desc: str,
+        status_type: Literal["info", "progress", "tool", "success", "error"] = "info",
+        spinner: str | None = None,
+    ):
+
+        styles = {
+            "info": "[cyan]",
+            "progress": "[yellow]",
+            "tool": "[blue]",
+            "success": "[green]",
+            "error": "[red]",
+        }
+
+        self.status.update(
+            status=f"{styles[status_type]}{desc}",
+            spinner=spinner,
+        )
+
+    def _log_error(self, err_msg):
+        console.print(
+            f"[bold red]ERROR:[/] {err_msg}\n" "Try again with another provider.",
+            style="yellow",
         )
 
 

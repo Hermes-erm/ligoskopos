@@ -2,7 +2,7 @@ from collections.abc import Callable
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pydantic import BaseModel
-from typing import Any, Literal
+from typing import Any, Literal, Optional
 from .template.prompt import llm_response_schema
 from .tools.registry import tool_defs
 
@@ -39,7 +39,14 @@ class ToolCall(BaseModel):
     function_arguments: dict[str, Any]
 
 
+class ResponseError(BaseModel):
+    message: str
+    body: Any = None
+    code: str | None = None
+
+
 class ChatResponse(BaseModel):
-    response_type: Literal["text", "tool_call"]
-    text_output: str
-    tool_call: ToolCall | dict = {}
+    response_type: Literal["text", "tool_call", "error"]
+    text_output: str = ""
+    tool_call: ToolCall | None = None
+    error: ResponseError | None = None

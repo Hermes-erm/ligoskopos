@@ -26,12 +26,8 @@ def start(agent: Agent):
     try:
         while True:
             user_prompt = prompt(
-                HTML(
-                    f"<ansigreen><b>{USER_NAME}</b></ansigreen> <ansidarkcyan>›</ansidarkcyan> "
-                ),
-                placeholder=HTML(
-                    '<style color="#666666"><i>What’s on your mind?</i></style>'
-                ),
+                HTML(f"<ansigreen><b>{USER_NAME}</b></ansigreen> <ansidarkcyan>›</ansidarkcyan> "),
+                placeholder=HTML('<style color="#666666"><i>What’s on your mind?</i></style>'),
             )
             user_prompt = user_prompt.strip()
 
@@ -42,11 +38,11 @@ def start(agent: Agent):
                 console.print("[dim]Catch you later! 👋 Bye[/dim]")
                 break
 
-            with console.status(
-                f"{BOT_NAME} thinking",
-                spinner="simpleDotsScrolling",  # 'dots', 'aesthetic'
-            ):
-                agent.run(user_prompt)
+            # with console.status(
+            #     f"{BOT_NAME} thinking",
+            #     spinner="simpleDotsScrolling",  # 'dots', 'aesthetic'
+            # ):
+            agent.run(user_prompt)
 
     except KeyboardInterrupt:
         console.print("[dim]\nExiting...[/dim]")

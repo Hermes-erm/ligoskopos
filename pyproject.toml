@@ -18,6 +18,9 @@ dependencies = [
     "rich>=15.0.0",
 ]
 
+# [tool.black]
+# line-length = 100
+
 [project.scripts]
 ligoskopos = "ligoskopos:main"
 
