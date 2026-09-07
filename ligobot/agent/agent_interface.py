@@ -4,8 +4,9 @@ from agent.tools.registry import tool_defs, tool_functions
 from agent.llm_client import LLMClient
 from .context_builder import ContextBuilder
 from .contracts import ChatResponse
-from config import BOT_NAME, LOOP_DEPTH, console
+from config import BOT_NAME, LOOP_DEPTH, console, engine
 from rich.panel import Panel
+from sqlalchemy.orm import sessionmaker
 
 
 class Agent:
@@ -28,6 +29,8 @@ class Agent:
         self.llm_client = llm_client
         self.context_builder = context_builder
         self.tools = tool_defs
+
+        self.session = sessionmaker(bind=engine)
 
     def _process_stream_data(self, chunk):
         print(chunk, end="", flush=True)

@@ -5,6 +5,11 @@ from pydantic import BaseModel
 from typing import Any, Literal, Optional
 from .template.prompt import llm_response_schema
 from .tools.registry import tool_defs
+from sqlalchemy import Column, Integer, func
+from sqlalchemy.types import Enum, Text, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 
 @dataclass
@@ -50,3 +55,23 @@ class ChatResponse(BaseModel):
     text_output: str = ""
     tool_call: ToolCall | None = None
     error: ResponseError | None = None
+
+
+class History(Base):
+    __tablename__ = "conv_history"
+
+    id = Column(Integer, primary_key=True)
+    conversation_id = Column(Integer, index=True, nullable=False)
+
+    role = Column(Enum("user", "llm"), nullable=False)
+    message = Column(Text, nullable=False)
+    response_type = Column(Enum("text", "tool_call"), nullable=False)
+
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+
+    def __repr__(self):
+        return (
+            f"History(id={self.id}, name={self.name}, "
+            f"date={self.date}, message={self.message}, "
+            f"response_type={self.response_type})"
+        )

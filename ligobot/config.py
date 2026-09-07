@@ -1,6 +1,8 @@
 from dotenv import dotenv_values
 from pathlib import Path
 from rich.console import Console
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 console = Console()
 
@@ -14,3 +16,11 @@ OPENROUTER_API_KEY = env_vars.get("OPENROUTER_API_KEY")
 GROQ_API_KEY = env_vars.get("GROQ_API_KEY")
 
 LOOP_DEPTH = 10
+
+DATABASE_URL = f"sqlite:///{BASE_DIR / "history.db"}"
+
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False},
+    echo=False,  # True on terminal logs
+)
