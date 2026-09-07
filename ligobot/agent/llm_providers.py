@@ -25,6 +25,7 @@ class Gemini(LLMProvider):
                 # tools=self.tools,
             )
             return interaction.output_text
+
         except genAPIErr as err:
             return ChatResponse(
                 response_type="error",
