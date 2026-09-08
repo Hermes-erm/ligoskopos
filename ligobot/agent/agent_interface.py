@@ -3,7 +3,7 @@ from typing import Literal
 from agent.tools.registry import tool_defs, tool_functions
 from agent.llm_client import LLMClient
 from .context_builder import ContextBuilder
-from .contracts import ChatResponse
+from .contracts import ChatResponse, Base, History
 from config import BOT_NAME, LOOP_DEPTH, console, engine
 from rich.panel import Panel
 from sqlalchemy.orm import sessionmaker
@@ -30,16 +30,15 @@ class Agent:
         self.context_builder = context_builder
         self.tools = tool_defs
 
-        self.session = sessionmaker(bind=engine)
+        Session = sessionmaker(bind=engine)
+        Base.metadata.create_all(bind=engine)
+
+        self.session = Session()
 
     def _process_stream_data(self, chunk):
         print(chunk, end="", flush=True)
 
-    def _process_bot_cli_output(sefl, message): ...
-
     def run(self, user_prompt: str):
-        # message = self.context_builder.build(user_prompt)
-
         self.status.start()
 
         result = self._loop(user_prompt)
@@ -55,6 +54,8 @@ class Agent:
         response = self.llm_client.generate(
             self.context_builder.system_prompt, user_req
         )
+
+        self._save_conv(role="user", message=user_req, type="text")  # null on user
 
         while True:
 
@@ -74,6 +75,12 @@ class Agent:
 
                 fn_result = tool_functions[fn_name](**fn_args)
 
+                self._save_conv(
+                    role="llm",
+                    message=f"Tool result: {fn_result}",
+                    type=response.response_type,
+                )
+
                 response = self.llm_client.generate(
                     self.context_builder.system_prompt
                     + f"\nLast function call result: {fn_result}",
@@ -83,6 +90,11 @@ class Agent:
                 self._log_error(response.error.message)
                 break
             else:
+                self._save_conv(
+                    role="llm",
+                    message=response.text_output,
+                    type=response.response_type,
+                )
                 return response.text_output
 
             loop_cnt += 1
@@ -122,6 +134,37 @@ class Agent:
             f"[bold red]\nERROR:[/] {err_msg}, Try again",
             style="yellow",
         )
+
+    def _get_chats(self, conv_limit: int):
+        result = (
+            self.session.query(History)
+            .order_by(History.created_at.desc())
+            .limit(conv_limit * 2)
+            .all()
+        )
+        print(result)
+        return result
+
+    def _save_conv(
+        self,
+        role: Literal["user", "llm"],
+        message: str,
+        type: Literal["text", "tool_call"],
+    ):
+        last_conv_id = (
+            self.session.query(History.conversation_id)
+            .order_by(History.created_at.desc())
+            .limit(1)
+            .scalar()
+        )
+
+        last_conv_id = last_conv_id if role == "llm" else (last_conv_id or 0) + 1
+
+        data = History(
+            role=role, message=message, response_type=type, conversation_id=last_conv_id
+        )
+        self.session.add(data)
+        self.session.commit()
 
 
 # run(): self.llm_client.provider.stream_chat(user_prompt, self._process_stream_data)

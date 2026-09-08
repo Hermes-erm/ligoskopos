@@ -61,13 +61,13 @@ class History(Base):
     __tablename__ = "conv_history"
 
     id = Column(Integer, primary_key=True)
-    conversation_id = Column(Integer, index=True, nullable=False)
+    conversation_id = Column(Integer, index=True, default=1)
 
     role = Column(Enum("user", "llm"), nullable=False)
     message = Column(Text, nullable=False)
     response_type = Column(Enum("text", "tool_call"), nullable=False)
 
-    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    created_at = Column(DateTime, index=True, server_default=func.now(), nullable=False)
 
     def __repr__(self):
         return (

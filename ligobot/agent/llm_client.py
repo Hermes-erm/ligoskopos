@@ -58,6 +58,7 @@ class LLMClient:
         # print(response)
         data = json_repair.loads(response)
         if not isinstance(data, dict):  # Handle on err log
+            print(repr(data))
             raise ValueError(
                 f"Model did not return valid JSON. Raw output: {response!r}"
             )

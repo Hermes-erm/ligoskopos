@@ -21,7 +21,32 @@ class Gemini(LLMProvider):
             interaction = self.client.interactions.create(
                 model=self.model,
                 system_instruction=system_prompt,
-                input=message,
+                input=[
+                    [
+                        {
+                            "type": "user_input",
+                            "content": [{"type": "text", "text": "Hello!"}],
+                        },
+                        {
+                            "type": "model_output",
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "text": "Hi there! How can I help you today?",
+                                }
+                            ],
+                        },
+                        {
+                            "type": "user_input",
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "text": "What is the capital of France?",
+                                }
+                            ],
+                        },
+                    ]
+                ],
                 # tools=self.tools,
             )
             return interaction.output_text
@@ -64,7 +89,11 @@ class OpenAICompatible(LLMProvider):
             interaction = self.client.responses.create(
                 model=self.model,
                 instructions=system_prompt,
-                input=message,
+                input=[
+                    {"role": "user", "content": "i like blue"},
+                    {"role": "assistant", "content": "i like orange"},
+                    {"role": "user", "content": message},
+                ],
                 # tools=self.tools,
             )
             return interaction.output_text
