@@ -54,6 +54,14 @@ class Agent:
     def _loop(self, user_req):
         loop_cnt = 1
 
+        is_wakeup = user_req == "Hi"
+
+        self._status_update(
+            (
+                f"{BOT_NAME} waking up.." if is_wakeup else f"{BOT_NAME} processing.."
+            ),  # spinner: simpleDotsScrolling, runner
+        )
+
         response = self.llm_client.generate(
             self.context_builder.system_prompt, self.messages, user_req
         )

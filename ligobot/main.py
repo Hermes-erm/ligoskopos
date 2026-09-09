@@ -19,11 +19,13 @@ def start(agent: Agent):
 
     console.print(
         Panel.fit(
-            f"[bold cyan]{BOT_NAME}[/bold cyan]\n[dim]Your lightweight AI agent[/dim]",
+            f"[bold cyan]{BOT_NAME}[/bold cyan]\n[dim]Your lightweight AI agent · WIP[/dim]",
             border_style="cyan",
         )
     )
     try:
+        agent.run("Hi")
+
         while True:
             user_prompt = prompt(
                 HTML(
@@ -38,21 +40,16 @@ def start(agent: Agent):
             if not user_prompt:
                 continue
 
-            if user_prompt.lower() in ["quit", "bye", "exit", "clear"]:
+            if user_prompt.lower() in ["quit", "bye", "exit"]:
                 console.print("[dim]Catch you later! 👋 Bye[/dim]")
                 break
 
-            # with console.status(
-            #     f"{BOT_NAME} thinking",
-            #     spinner="simpleDotsScrolling",  # 'dots', 'aesthetic'
-            # ):
             agent.run(user_prompt)
 
     except KeyboardInterrupt:
         console.print("[dim]\nExiting...[/dim]")
 
 
-# print("Ligo waking up..")
 if __name__ == "__main__":
 
     # llm_provider = OpenRouter(model="nvidia/nemotron-3.5-lightning:free")
