@@ -141,7 +141,7 @@ class Agent:
         )
 
     def _get_chats(self, conv_limit: int = conv_limit):
-        max_id = self.session.query(func.max(History.conversation_id)).scalar()
+        max_id = self.session.query(func.max(History.conversation_id)).scalar() or 0
 
         result = (
             self.session.query(History)
@@ -165,6 +165,7 @@ class Agent:
             .scalar()
         )
 
+        # TODO: self.conversation_id -> state by current conversation ID
         last_conv_id = last_conv_id if role == "llm" else (last_conv_id or 0) + 1
 
         data = History(
