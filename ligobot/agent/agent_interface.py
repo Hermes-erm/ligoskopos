@@ -81,7 +81,7 @@ class Agent:
 
                 self._save_conv(
                     role="llm",
-                    message=f"Tool result: {fn_result}",
+                    message=f"Tool: {fn_name}\nTool result: {fn_result}",
                     type=response.response_type,
                 )
 
