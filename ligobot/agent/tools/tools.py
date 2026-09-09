@@ -99,6 +99,9 @@ def _update_memory(data: str):
     with open(path, "w", encoding="utf-8") as file:
         file.write(data)
 
+    # return f"Memory updated successfully: {data[:30].strip()}..."
+    return "Memory updated successfully."
+
 
 @register(desc="""Read the current persistent memory from MEMORY.md.
 
