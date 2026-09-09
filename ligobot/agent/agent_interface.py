@@ -5,6 +5,7 @@ from agent.llm_client import LLMClient
 from .context_builder import ContextBuilder
 from .contracts import ChatResponse, Base, History
 from config import BOT_NAME, LOOP_DEPTH, console, engine
+from rich.markdown import Markdown
 from rich.panel import Panel
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import func
@@ -115,10 +116,11 @@ class Agent:
     def _log_response(self, response):
         console.print(
             Panel(
-                response,
+                Markdown(response, code_theme="monokai"),
                 title="[bold cyan]Ligo[/bold cyan]",
                 border_style="cyan",
                 padding=(0, 1),
+                expand=True,
             )
         )
 
