@@ -221,8 +221,8 @@ __marimo__/
 # workspace
 
 # Files Under Agent workspace
-**/workspace/**.md
-**/workspace/**.jsonl
+# **/workspace/**.md
+# **/workspace/**.jsonl
 
 # db
 **.db
