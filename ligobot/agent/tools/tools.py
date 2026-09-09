@@ -54,3 +54,24 @@ def _run_cmd(cmd: list[str], is_shell: bool = False):
     }
 
     return json.dumps(output)
+
+
+@register(
+    desc="""Write data to a file at the specified path.
+
+Use this tool to create a new file or overwrite an existing file.
+The `file_path` must be the target file path, and `data` is the content
+to write to the file. If `data` is omitted, the file will be empty.
+
+This operation overwrites the existing file contents.""",
+    properties={
+        "file_path": {"type": "string"},
+        "data": {"type": "string", "default": ""},
+    },
+    required=["file_path"],
+)
+def _write_file(file_path: str, data=""):
+    with open(file=file_path, mode="w", encoding="utf-8") as file:
+        file.write(data)
+
+    return f"File '{file_path}' created or overwritten successfully."
