@@ -4,6 +4,7 @@ from datetime import datetime
 from config import BASE_DIR
 import subprocess
 from subprocess import CompletedProcess
+from pathlib import Path
 
 cwd = str(BASE_DIR)  # Home dir
 
@@ -75,3 +76,35 @@ def _write_file(file_path: str, data=""):
         file.write(data)
 
     return f"File '{file_path}' created or overwritten successfully."
+
+
+@register(
+    desc="""Update persistent memory in MEMORY.md.
+
+Use when the user explicitly asks to remember, update, or forget
+information that is useful across future conversations.
+
+Before updating, check existing memory and:
+- Add genuinely new information.
+- Update existing information instead of creating duplicates.
+- Remove or correct information the user retracts.
+- Do not store temporary, sensitive, unverified, or irrelevant information.""",
+    properties={
+        "data": {"type": "string"},
+    },
+    required=["data"],
+)
+def _update_memory(data: str):
+    path = Path(__file__).parents[1] / "template/workspace/MEMORY.md"
+    with open(path, "w", encoding="utf-8") as file:
+        file.write(data)
+
+
+@register(desc="""Read the current persistent memory from MEMORY.md.
+
+Use this tool before updating memory to check existing information,
+avoid duplicates, and identify any existing information that needs
+to be updated or removed.""")
+def _read_memory():
+    path = Path(__file__).parents[1] / "template/workspace/MEMORY.md"
+    return path.read_text(encoding="utf-8")
