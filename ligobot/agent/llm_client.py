@@ -54,7 +54,7 @@ class LLMClient:
         self.token_used = None
 
     def generate(self, system_prompt, history, user_req):
-        messages = self._buid_conv(history, user_req)
+        messages = self._build_conv(history, user_req)
 
         response = self.provider.chat(system_prompt, messages)
         # print(response)
@@ -67,7 +67,15 @@ class LLMClient:
             )
         return ChatResponse.model_validate(data)  # Python dict/instance -> Schema
 
-    def _buid_conv(self, history: list[History], user_req: str): ...
+    def _build_conv(self, history: list[History], user_req: str):
+        convs = "### Chat History ###\n"
+
+        for msg in history:
+            convs += f"[{msg.created_at}] {msg.role}: {msg.message}\n"
+
+        convs += f"\n### Current User Query ###\n{user_req}"
+
+        return convs
 
 
 # [

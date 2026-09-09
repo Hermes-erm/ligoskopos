@@ -25,6 +25,7 @@ class Agent:
     """
 
     status = console.status("Agent executing")
+    conv_limit = 5
 
     def __init__(self, llm_client: LLMClient, context_builder: ContextBuilder):
         self.llm_client = llm_client
@@ -35,6 +36,7 @@ class Agent:
         Base.metadata.create_all(bind=engine)
 
         self.session = Session()
+        self.messages = self._get_chats()
 
     def _process_stream_data(self, chunk):
         print(chunk, end="", flush=True)
@@ -53,12 +55,13 @@ class Agent:
         loop_cnt = 1
 
         response = self.llm_client.generate(
-            self.context_builder.system_prompt, user_req
+            self.context_builder.system_prompt, self.messages, user_req
         )
 
         self._save_conv(role="user", message=user_req, type="text")  # null on user
 
         while True:
+            # print(self.messages)
 
             if loop_cnt >= LOOP_DEPTH:
                 self._log_error("Maximum loop depth exceeded")
@@ -83,8 +86,9 @@ class Agent:
                 )
 
                 response = self.llm_client.generate(
-                    self.context_builder.system_prompt
-                    + f"\nLast function call result: {fn_result}",
+                    self.context_builder.system_prompt,
+                    # + f"\nLast function call result: {fn_result}",
+                    self.messages,
                     user_req,
                 )
             elif response.response_type == "error":
@@ -136,7 +140,7 @@ class Agent:
             style="yellow",
         )
 
-    def _get_chats(self, conv_limit: int):
+    def _get_chats(self, conv_limit: int = conv_limit):
         max_id = self.session.query(func.max(History.conversation_id)).scalar()
 
         result = (
@@ -166,6 +170,9 @@ class Agent:
         data = History(
             role=role, message=message, response_type=type, conversation_id=last_conv_id
         )
+
+        self.messages.append(data)
+
         self.session.add(data)
         self.session.commit()
 
