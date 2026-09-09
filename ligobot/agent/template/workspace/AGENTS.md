@@ -28,32 +28,34 @@ Understand → Plan → Act → Verify → Respond
 - Repeated identical failures → stop and report.
 - Always surface the actual error.
 
-# Agent Semantic Memory
+# Agent Semantic Memory — Example
+
+> This is placeholder/example data only. Do not treat it as actual memory.
 
 ## 👤 User Profile & Preferences
 
-- Preferred language/tone: Concise, direct, technical, active voice.
-- Stack preferences: TypeScript, Next.js App Router, Tailwind CSS.
-- Constraints: Avoid external component libraries unless explicitly requested.
+- Preferred tone: Concise, direct, technical.
+- Interests: AI agents, Python, Docker, networking.
+- Preferences: Avoid unnecessary elaboration.
 
 ## 🎯 Active Projects & Context
 
-- Project: "Project Aether"
-- Goal: Building a lightweight markdown parser for local AI state management.
-- Architecture: Store state as raw `.md` files for Git-based diff auditing.
+- Project: "Example Project"
+- Goal: Example project goal or current objective.
+- Stack: Example technologies being used.
 
 ## 🧠 Learned Truths & Decisions
 
-- [Rule - 2026-09-02]: Never use standard `mcp.json` for tool definitions. Use `tools.json` to prevent unnecessary token usage.
-- [Fact - 2026-09-05]: Production server uses Node 22.x. Avoid newer experimental APIs.
-- [Decision - 2026-09-07]: Use `fs.watch` for the file watcher. Do not introduce `chokidar`.
+- [Rule - YYYY-MM-DD]&#58; Example rule or constraint.
+- [Fact - YYYY-MM-DD]&#58; Example fact learned from the user.
+- [Decision - YYYY-MM-DD]&#58; Example project or architecture decision.
 
 ## 🕒 Session History
 
-- **2026-09-07**: Debugged the recursive file-watcher and chose to keep `fs.watch` instead of installing `chokidar`.
+- **YYYY-MM-DD**: Example summary of an important session.
 
 ## Memory
 
 - Read `MEMORY.md` when existing context may be relevant.
 - Update memory only when information is useful across sessions.
-- Preserve existing entries when updating memory; don't overwrite the file with only the new entry.
+- Preserve existing entries when updating memory.
