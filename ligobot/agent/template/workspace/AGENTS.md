@@ -58,4 +58,4 @@ Understand → Plan → Act → Verify → Respond
 
 - Read `MEMORY.md` when existing context may be relevant.
 - Update memory only when information is useful across sessions.
-- Preserve existing entries when updating memory.
+- Preserve existing entries when updating memory; don't overwrite the file with only the new entry.
