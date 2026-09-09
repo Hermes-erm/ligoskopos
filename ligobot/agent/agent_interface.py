@@ -7,6 +7,7 @@ from .contracts import ChatResponse, Base, History
 from config import BOT_NAME, LOOP_DEPTH, console, engine
 from rich.panel import Panel
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import func
 
 
 class Agent:
@@ -136,13 +137,15 @@ class Agent:
         )
 
     def _get_chats(self, conv_limit: int):
+        max_id = self.session.query(func.max(History.conversation_id)).scalar()
+
         result = (
             self.session.query(History)
-            .order_by(History.created_at.desc())
-            .limit(conv_limit * 2)
+            .where(History.conversation_id > max_id - conv_limit)
+            .order_by(History.created_at)
             .all()
         )
-        print(result)
+
         return result
 
     def _save_conv(

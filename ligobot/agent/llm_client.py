@@ -1,5 +1,5 @@
 import json_repair
-from .contracts import ChatResponse
+from .contracts import ChatResponse, History
 from agent.contracts import LLMProvider
 from agent.llm_providers import Gemini, OpenRouter, Groq
 from prompt_toolkit.shortcuts import choice
@@ -53,9 +53,12 @@ class LLMClient:
         self.token_limit = None
         self.token_used = None
 
-    def generate(self, system_prompt, message):
-        response = self.provider.chat(system_prompt, message)
+    def generate(self, system_prompt, history, user_req):
+        messages = self._buid_conv(history, user_req)
+
+        response = self.provider.chat(system_prompt, messages)
         # print(response)
+
         data = json_repair.loads(response)
         if not isinstance(data, dict):  # Handle on err log
             print(repr(data))
@@ -63,3 +66,39 @@ class LLMClient:
                 f"Model did not return valid JSON. Raw output: {response!r}"
             )
         return ChatResponse.model_validate(data)  # Python dict/instance -> Schema
+
+    def _buid_conv(self, history: list[History], user_req: str): ...
+
+
+# [
+#     [
+#         {
+#             "type": "user_input",
+#             "content": [{"type": "text", "text": "Hello!"}],
+#         },
+#         {
+#             "type": "model_output",
+#             "content": [
+#                 {
+#                     "type": "text",
+#                     "text": "Hi there! How can I help you today?",
+#                 }
+#             ],
+#         },
+#         {
+#             "type": "user_input",
+#             "content": [
+#                 {
+#                     "type": "text",
+#                     "text": "What is the capital of France?",
+#                 }
+#             ],
+#         },
+#     ]
+# ]
+
+# [
+#     {"role": "user", "content": "i like blue"},
+#     {"role": "assistant", "content": "i like orange"},
+#     {"role": "user", "content": message},
+# ]

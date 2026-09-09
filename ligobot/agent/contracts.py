@@ -27,7 +27,7 @@ class LLMProvider(ABC):
         self.tools = tool_defs
 
     @abstractmethod
-    def chat(self, system_prompt, message) -> Any:
+    def chat(self, system_prompt, messages) -> Any:
         pass
 
     @abstractmethod
@@ -71,7 +71,7 @@ class History(Base):
 
     def __repr__(self):
         return (
-            f"History(id={self.id}, name={self.name}, "
-            f"date={self.date}, message={self.message}, "
-            f"response_type={self.response_type})"
+            f"History(id={self.id}, role={self.role}, "
+            f"created_at={self.created_at}, message={self.message}, "
+            f"response_type={self.response_type}, conversation_id={self.conversation_id})"
         )

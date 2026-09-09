@@ -16,37 +16,12 @@ class Gemini(LLMProvider):
         self.model = model
         self.client = genai.Client(api_key=GEMINI_API_KEY)
 
-    def chat(self, system_prompt, message):
+    def chat(self, system_prompt, messages):
         try:
             interaction = self.client.interactions.create(
                 model=self.model,
                 system_instruction=system_prompt,
-                input=[
-                    [
-                        {
-                            "type": "user_input",
-                            "content": [{"type": "text", "text": "Hello!"}],
-                        },
-                        {
-                            "type": "model_output",
-                            "content": [
-                                {
-                                    "type": "text",
-                                    "text": "Hi there! How can I help you today?",
-                                }
-                            ],
-                        },
-                        {
-                            "type": "user_input",
-                            "content": [
-                                {
-                                    "type": "text",
-                                    "text": "What is the capital of France?",
-                                }
-                            ],
-                        },
-                    ]
-                ],
+                input=messages,
                 # tools=self.tools,
             )
             return interaction.output_text
@@ -84,16 +59,12 @@ class OpenAICompatible(LLMProvider):
         self.models = models
         self.client = OpenAI(base_url=base_url, api_key=api_key)
 
-    def chat(self, system_prompt, message):
+    def chat(self, system_prompt, messages):
         try:
             interaction = self.client.responses.create(
                 model=self.model,
                 instructions=system_prompt,
-                input=[
-                    {"role": "user", "content": "i like blue"},
-                    {"role": "assistant", "content": "i like orange"},
-                    {"role": "user", "content": message},
-                ],
+                input=messages,
                 # tools=self.tools,
             )
             return interaction.output_text
