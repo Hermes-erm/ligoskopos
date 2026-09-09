@@ -73,7 +73,7 @@ class OpenAICompatible(LLMProvider):
             return ChatResponse(
                 response_type="error",
                 error=ResponseError(
-                    message=err.body["message"], code=err.code, body=err.body
+                    message=err.body.get("message"), code=str(err.code), body=err.body
                 ),
             ).model_dump_json()
 

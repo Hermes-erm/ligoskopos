@@ -45,7 +45,7 @@ class ToolCall(BaseModel):
 
 
 class ResponseError(BaseModel):
-    message: str
+    message: str | None
     body: Any = None
     code: str | None = None
 

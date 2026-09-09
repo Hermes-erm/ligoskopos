@@ -2,11 +2,10 @@ from dotenv import dotenv_values
 from pathlib import Path
 from rich.console import Console
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 console = Console()
 
-USER_NAME = "Panda"
+USER_NAME = "Hermes"
 BOT_NAME = "Ligo"
 
 BASE_DIR = Path(__file__).resolve().parents[1]
